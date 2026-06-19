@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#1a73e8" />
+    
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="icon-192.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
+    
+    <title>Калькулятор снятия 25ки</title>
+    
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      
+      body {
+        font-family: -apple-system, 'Google Sans', Arial, sans-serif;
+        padding: 20px;
+        background: #f8f9fa;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      
+      .container {
+        max-width: 400px;
+        width: 100%;
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      }
+      
+      h3 {
+        color: #1a73e8;
+        margin-bottom: 24px;
+        text-align: center;
+        font-size: 22px;
+      }
+      
+      label {
+        display: block;
+        margin-top: 16px;
+        font-weight: 500;
+        font-size: 14px;
+        color: #3c4043;
+      }
+      
+      input {
+        width: 100%;
+        padding: 12px;
+        margin-top: 6px;
+        border: 1px solid #dadce0;
+        border-radius: 8px;
+        font-size: 16px;
+        -webkit-appearance: none;
+        appearance: none;
+      }
+      
+      input:focus {
+        border-color: #1a73e8;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+      }
+      
+      button {
+        background: #1a73e8;
+        color: white;
+        border: none;
+        padding: 16px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 500;
+        width: 100%;
+        margin-top: 24px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      
+      button:active {
+        background: #1557b0;
+        transform: scale(0.98);
+      }
+      
+      .result {
+        font-size: 22px;
+        font-weight: bold;
+        padding: 16px;
+        margin-top: 20px;
+        border-radius: 8px;
+        text-align: center;
+        display: none;
+      }
+      
+      .pink {
+        background: #fce4ec;
+        color: #c62828;
+        display: block;
+        border: 2px solid #f8bbd0;
+      }
+      
+      .green {
+        background: #e8f5e9;
+        color: #2e7d32;
+        display: block;
+        border: 2px solid #a5d6a7;
+      }
+      
+      .error {
+        background: #fef7e0;
+        color: #e37400;
+        display: block;
+        border: 2px solid #ffcc80;
+      }
+      
+      .max {
+        background: #fff3e0;
+        color: #e65100;
+        display: block;
+        border: 2px solid #ffcc80;
+      }
+      
+      .result-number {
+        font-size: 32px;
+        display: block;
+        margin-top: 4px;
+      }
+      
+      .result-small {
+        font-size: 18px;
+        font-weight: normal;
+        display: block;
+        margin-top: 4px;
+        color: #bf360c;
+      }
+      
+      .footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 12px;
+        color: #9aa0a6;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h3>🧮 Калькулятор снятия 25ки</h3>
+      
+      <label>Суммарная выручка за 2 дня (руб)</label>
+      <input type="number" id="x" step="0.01" placeholder="Например: 150000" />
+      
+      <label>Количество загруженного товара (кг)</label>
+      <input type="number" id="y" step="0.01" placeholder="Например: 500" />
+      
+      <button id="calculateBtn">✅ Рассчитать</button>
+      
+      <div id="result" class="result"></div>
+      
+      <div class="footer">Версия 1.0</div>
+    </div>
+
+    <script>
+      function calculate() {
+        var x = parseFloat(document.getElementById('x').value);
+        var y = parseFloat(document.getElementById('y').value);
+        var resultDiv = document.getElementById('result');
+        
+        if (isNaN(x) || isNaN(y)) {
+          resultDiv.className = 'result error';
+          resultDiv.innerHTML = '⚠️ Заполните все поля числами!';
+          return;
+        }
+        
+        var kg = (y * 3.1) - x;
+        kg = Math.round(kg * 100) / 100;
+        
+        var maxThreshold = y * 0.26;
+        
+        if (kg > 0) {
+          if (kg > maxThreshold) {
+            resultDiv.className = 'result max';
+            resultDiv.innerHTML = '⚠️ Снимайте максимально <span class="result-small">(' + kg + ' кг)</span>';
+          } else {
+            resultDiv.className = 'result pink';
+            resultDiv.innerHTML = '📦 Нужно СНЯТЬ: <span class="result-number">' + kg + ' кг</span>';
+          }
+        } else {
+          resultDiv.className = 'result green';
+          resultDiv.innerHTML = '✅ Снимать не нужно <span class="result-number">0 кг</span>';
+        }
+      }
+      
+      document.getElementById('calculateBtn').addEventListener('click', calculate);
+      
+      document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') calculate();
+      });
+    </script>
+  </body>
+</html>
